@@ -31,15 +31,15 @@ export default function Home({ latestEpisodes, allEpisodes }: HomeProps) {
         <h2>Últimos Lançamentos</h2>
 
         <ul>
-          {latestEpisodes.map(episode => {
+          {latestEpisodes.map((episode) => {
             return (
               <li key={episode.id}>
-                <Image 
-                width={192} 
-                height={192} 
-                src={episode.thumbnail} 
-                alt={episode.title}
-                objectFit="cover"
+                <Image
+                  width={192}
+                  height={192}
+                  src={episode.thumbnail}
+                  alt={episode.title}
+                  objectFit="cover"
                 />
 
                 <div className={styles.episodeDetails}>
@@ -50,16 +50,55 @@ export default function Home({ latestEpisodes, allEpisodes }: HomeProps) {
                 </div>
 
                 <button type="button">
-                  <img src="/play-green.svg" alt="Tocar Episódio"/>
+                  <img src="/play-green.svg" alt="Tocar Episódio" />
                 </button>
               </li>
-            )
+            );
           })}
         </ul>
       </section>
 
       <section className={styles.allEpisodes}>
+        <h2>Todos episódios</h2>
 
+        <table cellSpacing={0}>
+          <thead>
+            <th></th>
+            <th>Podcast</th>
+            <th>Integrantes</th>
+            <th>Data</th>
+            <th>Duranção</th>
+            <th></th>
+          </thead>
+          <tbody>
+            {allEpisodes.map(episode => {
+              return (
+                <tr key={episode.id}>
+                  <td style={{ width: 72 }}>
+                    <Image 
+                      width={120}
+                      height={120}
+                      src={episode.thumbnail}
+                      alt={episode.title}
+                      objectFit="cover"
+                    />
+                  </td>
+                  <td>
+                    <a href="">{episode.title}</a>
+                  </td>
+                  <td>{episode.members}</td>
+                  <td style={{ width: 100 }}>{episode.publishedAt}</td>
+                  <td>{episode.durationAsString}</td>
+                  <td>
+                    <button type="button">
+                      <img src="/play-green.svg" alt="Tocar episódio"/>
+                    </button>
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
       </section>
     </div>
   );
@@ -92,7 +131,7 @@ export const getStaticProps: GetStaticProps = async () => {
     };
   });
 
-  const latestEpisodes = episodes.slice(0,2);
+  const latestEpisodes = episodes.slice(0, 2);
   const allEpisodes = episodes.slice(2, episodes.lenght);
 
   return {
