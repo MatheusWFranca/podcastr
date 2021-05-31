@@ -1,10 +1,12 @@
+import { useContext } from 'react';
+import { convertDurationToTimeString } from '../utils/convertDurationToTimeString';
+import { PlayerContext } from '../contexts/PlayerContext';
 import { GetStaticProps } from 'next';
+import { api } from '../services/api';
+import { format, parseISO } from 'date-fns';
 import Image from 'next/image';
 import Link from 'next/link'; // lib para não  recarregar todos os arquivos novamente no roteamento das paginas
-import { format, parseISO } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
-import { api } from '../services/api';
-import { convertDurationToTimeString } from '../utils/convertDurationToTimeString';
 
 import styles from './home.module.scss';
 
@@ -25,10 +27,12 @@ type HomeProps = {
 };
 
 export default function Home({ latestEpisodes, allEpisodes }: HomeProps) {
+  const player = useContext(PlayerContext);
+  
   return (
     <div className={styles.homepage}>
       <section className={styles.latestEpisodes}>
-        <h2>Últimos Lançamentos</h2>
+        <h2>Últimos Lançamentos {player}</h2>
 
         <ul>
           {latestEpisodes.map((episode) => {
@@ -39,7 +43,7 @@ export default function Home({ latestEpisodes, allEpisodes }: HomeProps) {
                   height={192}
                   src={episode.thumbnail}
                   alt={episode.title}
-                  objectFit="cover" 
+                  objectFit="cover"
                 />
 
                 <div className={styles.episodeDetails}>
@@ -66,20 +70,20 @@ export default function Home({ latestEpisodes, allEpisodes }: HomeProps) {
         <table cellSpacing={0}>
           <thead>
             <tr>
-            <th></th>
-            <th>Podcast</th>
-            <th>Integrantes</th>
-            <th>Data</th>
-            <th>Duranção</th>
-            <th></th>
+              <th></th>
+              <th>Podcast</th>
+              <th>Integrantes</th>
+              <th>Data</th>
+              <th>Duranção</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
-            {allEpisodes.map(episode => {
+            {allEpisodes.map((episode) => {
               return (
                 <tr key={episode.id}>
                   <td style={{ width: 72 }}>
-                    <Image 
+                    <Image
                       width={120}
                       height={120}
                       src={episode.thumbnail}
@@ -89,7 +93,7 @@ export default function Home({ latestEpisodes, allEpisodes }: HomeProps) {
                   </td>
                   <td>
                     <Link href={`/episodes/${episode.id}`}>
-                    <a>{episode.title}</a>
+                      <a>{episode.title}</a>
                     </Link>
                   </td>
                   <td>{episode.members}</td>
@@ -97,11 +101,11 @@ export default function Home({ latestEpisodes, allEpisodes }: HomeProps) {
                   <td>{episode.durationAsString}</td>
                   <td>
                     <button type="button">
-                      <img src="/play-green.svg" alt="Tocar episódio"/>
+                      <img src="/play-green.svg" alt="Tocar episódio" />
                     </button>
                   </td>
                 </tr>
-              )
+              );
             })}
           </tbody>
         </table>
@@ -130,7 +134,7 @@ export const getStaticProps: GetStaticProps = async () => {
       }),
       duration: Number(episode.file.duration),
       durationAsString: convertDurationToTimeString(
-        Number(episode.file.duration),
+        Number(episode.file.duration)
       ),
       url: episode.file.url,
     };
